@@ -387,12 +387,23 @@ parseHelp states =
 
 splitUrl : String -> List String
 splitUrl url =
-  case String.split "/" url of
-    "" :: segments ->
-      segments
+  List.map decodeSegment <|
+    case String.split "/" url of
+      "" :: segments ->
+        segments
 
-    segments ->
-      segments
+      segments ->
+        segments
+
+
+decodeSegment : String -> String
+decodeSegment segment =
+  case Http.decodeUri segment of
+    Just decoded ->
+      decoded
+
+    Nothing ->
+      segment
 
 
 parseParams : String -> Dict String String
